@@ -1,29 +1,25 @@
 "use client";
-import { useRouter } from "next/navigation";
-import queryParams from "../components/queryParams/queryParams";
-import API from "../components/API";
-import { TfiEmail } from "react-icons/tfi";
+import { TfiMobile } from "react-icons/tfi";
 import { TbLockPassword } from "react-icons/tb";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
-import { useContext, useEffect, useState } from "react";
+
+import { useRouter, useSearchParams } from "next/navigation";
+import { useContext, useState } from "react";
 import Link from "next/link";
+
 import Alert from "../components/alert/Alert";
 import { AuthContext } from "../state/AuthProvider";
 import fetchWithTimeOut from "../components/fetchwithtimeout/fetchWithTimeOut";
+import { APP_CONFIG } from "@/config/app.config";
 
 const LoginForm = () => {
   const { user, setUser } = useContext(AuthContext);
   const [show, setShow] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
   const redirect = () => {
-    let redirect_url = queryParams("redirect");
-    if (window) {
-      if (redirect_url) window.location.href = redirect_url;
-      else window.location.href = "/";
-    } else {
-      if (redirect_url) redirect_url;
-      else router.replace("/");
-    }
+    const redirectUrl = searchParams.get("redirect");
+    router.replace(redirectUrl ?? "/");
   };
   let loading = false;
   const submitHandler = async (e) => {
@@ -31,7 +27,7 @@ const LoginForm = () => {
     if (loading) return;
 
     let form = e.target;
-    let email_address = form.email.value;
+    let phone = form.phone.value;
     let password = form.password.value;
     let remember = form.remember.checked;
     let submitButton = form.submitButton;
@@ -41,7 +37,7 @@ const LoginForm = () => {
 
     try {
       const res = await fetchWithTimeOut(
-        `${API}/auth/login`,
+        `${APP_CONFIG.apiUrl}/authv2/login`,
         {
           method: "PUT",
           headers: {
@@ -49,7 +45,7 @@ const LoginForm = () => {
           },
           credentials: "include",
           body: JSON.stringify({
-            email_address,
+            phone,
             password,
             remember,
           }),
@@ -60,8 +56,10 @@ const LoginForm = () => {
       loading = false;
       submitButton.disabled = false;
       submitButton.innerText = "Login";
+
       if (data.success) {
         setUser(data.data);
+        redirect();
       } else {
         Alert("error", data.message);
       }
@@ -74,9 +72,9 @@ const LoginForm = () => {
       submitButton.innerText = "Login";
     }
   };
-  useEffect(() => {
-    if (user?.email_address) redirect();
-  }, [user]);
+  // useEffect(() => {
+  //   if (user?.email_address) redirect();
+  // }, [user]);
 
   return (
     <>
@@ -89,14 +87,14 @@ const LoginForm = () => {
             role="button"
             className="btn  bg-base-300 join-item pointer-events-none"
           >
-            <TfiEmail className="text-xl  text-light-gray" />
+            <TfiMobile className="text-xl  text-light-gray" />
           </button>
           <input
-            name="email"
-            type="email"
+            name="phone"
+            type="text"
             required
             className=" join-item border-0 bg-base-300 placeholder:text-light-gray  focus:outline-0 w-full"
-            placeholder="Email"
+            placeholder="Phone Number (01...)"
           />
         </fieldset>
         <fieldset className="join relative">

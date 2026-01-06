@@ -1,27 +1,24 @@
 "use client";
-import { useContext, useEffect, useState } from "react";
-import { TfiEmail } from "react-icons/tfi";
+import { TfiMobile } from "react-icons/tfi";
 import { TbLockPassword } from "react-icons/tb";
 import { FaRegEye, FaRegEyeSlash, FaRegUser } from "react-icons/fa";
-import { useRouter } from "next/navigation";
-import queryParams from "../components/queryParams/queryParams";
-import API from "../components/API";
+
+import { useContext, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+
 import Alert from "../components/alert/Alert";
 import { AuthContext } from "../state/AuthProvider";
 import fetchWithTimeOut from "../components/fetchwithtimeout/fetchWithTimeOut";
+import { APP_CONFIG } from "@/config/app.config";
+
 export const RegisterForm = () => {
   const [show, setShow] = useState(false);
-  const { user, setUser } = useContext(AuthContext);
+  const { setUser } = useContext(AuthContext);
   const router = useRouter();
+  const searchParams = useSearchParams();
   const redirect = () => {
-    let redirect_url = queryParams("redirect");
-    if (window) {
-      if (redirect_url) window.location.href = redirect_url;
-      else window.location.href = "/";
-    } else {
-      if (redirect_url) redirect_url;
-      else router.replace("/");
-    }
+    const redirectUrl = searchParams.get("redirect");
+    router.replace(redirectUrl ?? "/");
   };
   let loading = false;
   const submitHandler = async (e) => {
@@ -30,7 +27,7 @@ export const RegisterForm = () => {
 
     let form = e.target;
     let name = form.name.value;
-    let email = form.email.value;
+    let phone = form.phone.value;
     let password = form.password.value;
     let news_letter = form.news.checked;
     let submitButton = form.submitButton;
@@ -40,7 +37,7 @@ export const RegisterForm = () => {
 
     try {
       const res = await fetchWithTimeOut(
-        `${API}/auth/register`,
+        `${APP_CONFIG.apiUrl}/authv2/register`,
         {
           method: "POST",
           credentials: "include",
@@ -49,7 +46,7 @@ export const RegisterForm = () => {
           },
           body: JSON.stringify({
             name,
-            email_address: email,
+            phone,
             password,
             news_letter,
           }),
@@ -63,6 +60,7 @@ export const RegisterForm = () => {
 
       if (!data.success) return Alert("error", data.message);
       setUser(data.data);
+      redirect();
     } catch (error) {
       if (error.name === "AbortError")
         Alert("error", "Request timed out, unable to verify request");
@@ -73,9 +71,9 @@ export const RegisterForm = () => {
       submitButton.innerText = "Register";
     }
   };
-  useEffect(() => {
-    if (user?.email_address) redirect();
-  }, [user]);
+  // useEffect(() => {
+  //   if (user?.email_address) redirect();
+  // }, [user]);
 
   return (
     <>
@@ -104,14 +102,14 @@ export const RegisterForm = () => {
             role="button"
             className="btn  bg-base-300 join-item pointer-events-none"
           >
-            <TfiEmail className="text-xl  text-light-gray" />
+            <TfiMobile className="text-xl  text-light-gray" />
           </button>
           <input
-            name="email"
-            type="email"
+            name="phone"
+            type="text"
             required
             className=" join-item border-0 bg-base-300 placeholder:text-light-gray  focus:outline-0 w-full"
-            placeholder="Email"
+            placeholder="Phone Number (01...)"
           />
         </fieldset>
         <fieldset className="join relative">

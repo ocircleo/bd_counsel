@@ -7,6 +7,8 @@ import PopularCourses from "@/app/(MAINLAYOUT)/components/PopularCourses";
 import Mentors from "@/app/(MAINLAYOUT)/components/Mentors";
 import StartTeaching from "@/app/(MAINLAYOUT)/components/StartTeaching";
 import Stories from "@/app/(MAINLAYOUT)/components/Stories";
+import { Suspense } from "react";
+import LoadingCards from "../components/LoadingUI/LoadingCards";
 
 const Home = () => {
   return (
@@ -22,9 +24,11 @@ const Home = () => {
             Explore Our Signature Courses
           </p>
         </div>
-        <MultiItemSlider>
-          <SignatureCourses></SignatureCourses>
-        </MultiItemSlider>
+        <Suspense fallback={<LoadingCards type={"vertical"} />}>
+          <MultiItemSlider>
+            <SignatureCourses></SignatureCourses>
+          </MultiItemSlider>
+        </Suspense>
       </div>
       <PopularCourses></PopularCourses>
       <div className="bg-base-100 p-4 mt-12">
@@ -39,9 +43,11 @@ const Home = () => {
             Learn from the Best to Become the Best
           </p>
         </div>
-        <MultiItemSliderNoCount>
-          <Mentors></Mentors>
-        </MultiItemSliderNoCount>
+        <Suspense fallback={<LoadingCards type={"vertical"} />}>
+          <MultiItemSliderNoCount>
+            <Mentors></Mentors>
+          </MultiItemSliderNoCount>
+        </Suspense>
       </div>
 
       <StartTeaching></StartTeaching>

@@ -1,10 +1,11 @@
 "use client";
-import { useRef } from "react";
+import { Suspense, useRef } from "react";
 import FavoriteCourses from "@/app/(MAINLAYOUT)//components/FavoriteCourses"
 import MultiItemSliderNoCount from "@/app/components/slider/MultiItemSliderNoCount";
 import { HiOutlineMenuAlt2 } from "react-icons/hi";
 import { IoIosArrowForward } from "react-icons/io";
 import { IoIosArrowBack } from "react-icons/io";
+import LoadingCards from "@/app/components/LoadingUI/LoadingCards";
 
 const returnImageIndex = (index, type = "num") => {
     index++;
@@ -69,9 +70,11 @@ function PopularCoursesLayout() {
 
                 </div>
                 <div className="w-full">
-                    <MultiItemSliderNoCount>
-                        <FavoriteCourses></FavoriteCourses>
-                    </MultiItemSliderNoCount>
+                    <Suspense fallback={<LoadingCards type={"horizontal"} />}>
+                        <MultiItemSliderNoCount>
+                            <FavoriteCourses></FavoriteCourses>
+                        </MultiItemSliderNoCount>
+                    </Suspense>
                 </div>
             </div>
         </div>
@@ -87,7 +90,7 @@ function CategorySlider({ children }) {
         let ScrollElement;
 
         ScrollElement = container.current;
-      
+
 
         let to = ScrollElement.scrollLeft - scrolling_length;
 
@@ -102,7 +105,7 @@ function CategorySlider({ children }) {
         let ScrollElement;
 
         ScrollElement = container.current;
-     
+
         let to = ScrollElement.scrollLeft + scrolling_length;
 
         ScrollElement.scrollTo({

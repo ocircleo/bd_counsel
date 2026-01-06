@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import API from "./app/components/API";
+import { APP_CONFIG } from "@/config/app.config";
 
 export const middleware = async (request) => {
   let cookie = request.cookies.get("access_token")?.value;
@@ -50,7 +50,7 @@ async function userValidation(path, cookie) {
   }
 }
 async function fetchUser(cookie) {
-  return await fetch(API + "/auth/login_with_token", {
+  return await fetch(APP_CONFIG.apiUrl + "/auth/login_with_token", {
     method: "PUT",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({ token: cookie }),

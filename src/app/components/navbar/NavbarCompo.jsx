@@ -4,8 +4,11 @@ import ThemeButton from "@/app/components/theme/ThemeButton"
 import { GiHamburgerMenu } from "react-icons/gi";
 import { RxCross1 } from "react-icons/rx";
 import Link from 'next/link'
-import { getCachedUser } from '@/app/utls/cookies/cookies';
 import { AuthContext } from '@/app/state/AuthProvider';
+import ActiveNavLink from '@/app/utls/ActiveLink/ActiveNavLink';
+import ActiveLink from '@/app/utls/ActiveLink/ActiveLink';
+import ActiveNavLinkBG from '@/app/utls/ActiveLink/ActiveNavLinkBG';
+import Image from 'next/image';
 
 const NavbarCompo = ({ data }) => {
     const [show, setShow] = useState(false);
@@ -22,13 +25,19 @@ const NavbarCompo = ({ data }) => {
             <div className="navbar  h-20  w-full lg:w-[90%] mx-auto">
                 {/* logo */}
                 <div className="navbar-start">
-                    <Link href={"/"} className="btn btn-ghost text-xl"><img src={"/images/logos/logo.png"} alt="alt" className='h-full' /></Link>
+                    <Link href={"/"} className="cursor-pointer"><Image width={136} height={43} src={"/images/logos/logo.png"} alt="alt" className=' w-34 mx-2 rounded' /></Link>
                     <div className=" hidden lg:flex font-semibold">
-                        <ul className="menu menu-horizontal px-1">
+                        <ul className="flex gap-2 ms-4">
+                            <li>
+                                <ActiveNavLinkBG click={null} to={"/"}>Home</ActiveNavLinkBG>
 
-                            <li className="bg-base-300 text-custom-blue"><Link href={'/'}>Home</Link></li>
-                            <li><a>Bootcamp</a></li>
-                            <li><a>Testimonials</a></li>
+                            </li>
+                            <li>
+                                <ActiveNavLinkBG click={null} to={'/branch'}>Branch</ActiveNavLinkBG>
+
+                            </li>
+
+
                         </ul>
                     </div>
                 </div>
@@ -142,15 +151,20 @@ function Search() {
 function Dropdown({ toggleNav, user }) {
     return (<>
         <div className='navbar justify-between w-full h-20  items-center'>
-            <a className="btn btn-ghost text-xl"><img src={"/images/logos/logo.png"} alt="alt" className='h-full' /></a>
+            <Link href={"/"} className="cursor-pointer"><Image width={136} height={43} src={"/images/logos/logo.png"} alt="alt" className=' w-34 mx-2 rounded' /></Link>
             <button className="btn btn-sm btn-circle btn-ghost  text-lg" onClick={toggleNav}><RxCross1 className='text-xl font-semibold' /></button>
         </div>
 
-        <ul className="menu bg-base-200 rounded-box w-full h-full overflow-y-scroll
+        <ul className="menu gap-1 bg-base-200 rounded-box w-full h-full overflow-y-scroll
         ">
-            <li><a>Home</a></li>
-            <li><a>Bootcamp</a></li>
-            <li><a>Testimonials</a></li>
+            <li>
+                <ActiveNavLinkBG click={toggleNav} to={"/"}>Home</ActiveNavLinkBG>
+
+            </li>
+            <li>
+                <ActiveNavLinkBG click={toggleNav} to={'/branch'}>Branch</ActiveNavLinkBG>
+
+            </li>
             <li>
                 <DropdownSubMenuAccount user={user} />
             </li>
@@ -171,7 +185,7 @@ function DropdownSubMenuAccount({ user }) {
                         Account
                     </summary>
                     <ul>
-                        
+
                         <li><Link href={user?.role == "admin" ? "/admin" : "/dashboard"}>{user?.name ? user?.name : "profile"}</Link></li>
                         <li><Link href={"/logout"}>Logout</Link></li>
 
