@@ -7,13 +7,13 @@ import { useContext, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import Alert from "../components/alert/Alert";
-import { AuthContext } from "../state/AuthProvider";
+import { AuthActionContext } from "../state/AuthProvider";
 import fetchWithTimeOut from "../components/fetchwithtimeout/fetchWithTimeOut";
 import { APP_CONFIG } from "@/config/app.config";
 
 export const RegisterForm = () => {
   const [show, setShow] = useState(false);
-  const { setUser } = useContext(AuthContext);
+  const { setUser } = useContext(AuthActionContext);
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirect = () => {
@@ -58,9 +58,12 @@ export const RegisterForm = () => {
       submitButton.disabled = false;
       submitButton.innerText = "Register";
 
-      if (!data.success) return Alert("error", data.message);
-      setUser(data.data);
-      redirect();
+      if (data.success) {
+        setUser(data.data);
+        redirect();
+      } else {
+        Alert("error", data.message);
+      }
     } catch (error) {
       if (error.name === "AbortError")
         Alert("error", "Request timed out, unable to verify request");

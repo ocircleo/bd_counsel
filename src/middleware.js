@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { APP_CONFIG } from "@/config/app.config";
 import { jwtVerify, base64url } from "jose";
-
-const secret = base64url.decode(process.env.JWT_REFRESH_TOKEN_SECRET);
+const secretValue = process.env.JWT_REFRESH_TOKEN_SECRET;
+console.log(secretValue);
+const secret = base64url.decode(secretValue);
 
 export const middleware = async (request) => {
   let refreshToken = request.cookies.get("refresh_token")?.value ?? null;
