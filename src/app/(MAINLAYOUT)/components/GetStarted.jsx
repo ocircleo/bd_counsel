@@ -54,7 +54,7 @@ const GetStarted = () => {
             </div>
 
             <div className='col-span-5 lg:col-span-3 grid grid-cols-4 h-full w-full'>
-                <div className='col-span-4 sm:col-span-3 h-full xs:h-[300px] sm:h-[400px] lg:h-[600px]'>
+                <div className='col-span-4 sm:col-span-3 h-full  '>
 
                     <div className=" relative flex items-center justify-center h-full">
                         <Image width={484} height={560} src={'/images/images/imagebg.png'} alt="" className='z-0 absolute bottom-0 w-full md:w-[28rem] aspect-[4/5] object-cover' />

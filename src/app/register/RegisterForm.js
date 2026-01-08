@@ -71,9 +71,6 @@ export const RegisterForm = () => {
       submitButton.innerText = "Register";
     }
   };
-  // useEffect(() => {
-  //   if (user?.email_address) redirect();
-  // }, [user]);
 
   return (
     <>

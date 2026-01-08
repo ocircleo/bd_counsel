@@ -18,7 +18,7 @@ const Register = () => {
                 height={200}
                 src={"/images/logos/logo.png"}
                 alt=""
-                className="h-16 -translate-x-5"
+                className="h-16 rounded"
               />
             </Link>
             <h1 className="text-4xl font-bold pt-8">Register</h1>

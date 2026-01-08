@@ -1,15 +1,20 @@
 import { NextResponse } from "next/server";
 import { APP_CONFIG } from "@/config/app.config";
+import { jwtVerify, base64url } from "jose";
+
+const secret = base64url.decode(process.env.JWT_REFRESH_TOKEN_SECRET);
 
 export const middleware = async (request) => {
-  let cookie = request.cookies.get("access_token")?.value;
+
+  let accessToken = request.cookies.get("access_token")?.value;
+  let refreshToken = request.cookies.get("refresh_token")?.value;
   let path = request.nextUrl.pathname;
-  let { passed, to } = await userValidation(path, cookie);
+  let { passed, to } = await userValidation(path, accessToken, refreshToken);
   let response = NextResponse.next();
 
   if (passed) return response;
 
-  if (!passed) return Response.redirect("http://localhost:3000" + to);
+  if (!passed) return Response.redirect(APP_CONFIG.webUrl + to);
 };
 
 export const config = {
@@ -22,7 +27,8 @@ export const config = {
   ],
 };
 
-async function userValidation(path, cookie) {
+async function userValidation(path, accessToken, refreshToken) {
+  let cookie = accessToken || refreshToken;
   if (cookie && (path == "/login" || path == "/register"))
     return { passed: false, to: "/auth-reset" };
   else if (!cookie && (path == "/login" || path == "/register"))
@@ -30,9 +36,8 @@ async function userValidation(path, cookie) {
   if (!cookie) return { passed: false, to: `/login?redirect=${path}` };
   if (path.startsWith("/admin")) {
     try {
-      let res = await fetchUser(cookie);
-      const result = await res.json();
-      if (result.data?.role == "admin") return { passed: true, to: path };
+      let result = await verifyUser(refreshToken);
+      if (result?.role == "admin") return { passed: true, to: path };
       return { passed: false, to: "/auth-error" };
     } catch (error) {
       return { passed: false, to: "/auth-error" };
@@ -40,19 +45,24 @@ async function userValidation(path, cookie) {
   }
 
   try {
-    let res = await fetchUser(cookie);
-    const result = await res.json();
-    if (result.data?.email) return { passed: true, to: path };
+    let result = await verifyUser(refreshToken);
+    if (result.id) return { passed: true, to: path };
 
     return { passed: false, to: "/auth-reset" };
   } catch (error) {
     return { passed: false, to: "/auth-error" };
   }
 }
-async function fetchUser(cookie) {
-  return await fetch(APP_CONFIG.apiUrl + "/auth/login_with_token", {
-    method: "PUT",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify({ token: cookie }),
-  });
+async function verifyUser(refreshToken) {
+  try {
+    if(!refreshToken) return {};
+    let token = refreshToken?.replace("bearer ", "");
+    const result = await jwtVerify(token, secret, {
+      algorithms: ["HS256"],
+    });
+    return result.payload;
+  } catch (error) {
+    console.log("middlewere error", error);
+    return {};
+  }
 }

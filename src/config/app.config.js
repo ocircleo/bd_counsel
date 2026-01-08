@@ -23,7 +23,7 @@ const PROXY_URL = PROXY_URLS[3];
 export { WEB_URL, API_URL, PROXY_URL };
 
 // CHANGE THIS LINE ONLY TO SWITCH ENVIRONMENTS
-const ACTIVE_ENV = "lan1"; // "local", "lan1", "lan2", "prod"
+const ACTIVE_ENV = "prod"; // "local", "lan1", "lan2", "prod"
 const CONFIG = {
   local: {
     webUrl: "http://localhost:3000",
@@ -44,9 +44,9 @@ const CONFIG = {
   },
 
   prod: {
-    webUrl: "https://lab-inventory-frontend-orpin.vercel.app",
-    apiUrl: "https://lab-inventory-backend.vercel.app",
-    proxyApiUrl: "https://lab-inventory-frontend-orpin.vercel.app/api-proxy",
+    webUrl: "https://www.bangladeshcounsel.com",
+    apiUrl: "https://api.bangladeshcounsel.com",
+    proxyApiUrl: "https://www.bangladeshcounsel.com/api-proxy",
   },
 };
 

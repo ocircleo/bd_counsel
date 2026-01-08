@@ -8,12 +8,12 @@ import { useContext, useState } from "react";
 import Link from "next/link";
 
 import Alert from "../components/alert/Alert";
-import { AuthContext } from "../state/AuthProvider";
+import { AuthActionContext, AuthContext } from "../state/AuthProvider";
 import fetchWithTimeOut from "../components/fetchwithtimeout/fetchWithTimeOut";
 import { APP_CONFIG } from "@/config/app.config";
 
 const LoginForm = () => {
-  const { user, setUser } = useContext(AuthContext);
+  const { setUser } = useContext(AuthActionContext);
   const [show, setShow] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -65,16 +65,13 @@ const LoginForm = () => {
       }
     } catch (error) {
       if (error.name === "AbortError") Alert("error", "Request timed out");
-      else Alert("error", error + API);
+      else Alert("error", error.message || "Something went wrong");
 
       loading = false;
       submitButton.disabled = false;
       submitButton.innerText = "Login";
     }
   };
-  // useEffect(() => {
-  //   if (user?.email_address) redirect();
-  // }, [user]);
 
   return (
     <>
