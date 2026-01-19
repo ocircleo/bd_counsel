@@ -23,7 +23,7 @@ const PROXY_URL = PROXY_URLS[3];
 export { WEB_URL, API_URL, PROXY_URL };
 
 // CHANGE THIS LINE ONLY TO SWITCH ENVIRONMENTS
-const ACTIVE_ENV = "prod"; // "local", "lan1", "lan2", "prod"
+const ACTIVE_ENV = "lan1"; // "local", "lan1", "lan2", "prod"
 const CONFIG = {
   local: {
     webUrl: "http://localhost:3000",

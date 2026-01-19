@@ -1,7 +1,13 @@
 "use client";
 import React, { useState } from "react";
+import Link from "next/link";
+
+import { MdOutlineWbSunny } from "react-icons/md";
+
 import nav from "./nav.module.css";
 import ActiveLink from "@/app/utls/ActiveLink/ActiveLink";
+import LinkUiGenerator from "../components/SidebarLinkUiGenerator/LinkUIGEnerator";
+
 
 const dashboardLinks = [
     {
@@ -37,11 +43,28 @@ const dashboardLinks = [
 ];
 
 const Sidebar = ({ navState, toggleNav }) => {
+     const changeTheme = () => {
+        let theme_icon = document.getElementById("theme-controller")
+        theme_icon.click()
+    }
     return (
-        <aside className={` hidden lg:w-64  bg-gray-800 text-white h-screen overflow-y-hidden   sticky top-0 lg:flex flex-col gap-2`}>
+        <aside className={` hidden lg:w-64  bg-gray-800 text-white h-screen overflow-y-hidden   sticky top-0 lg:flex flex-col justify-between gap-2`}>
+            <div>
             <p className="text-xl font-bold text-center py-3  border-b-2">User Dashboard</p>
             <div className="flex flex-col gap-2 px-2 pb-12 overflow-y-auto small-scrollbar">
                 <LinkUiGenerator links={dashboardLinks} />
+            </div>
+
+            </div>
+              <div className="bg-gray-900 py-3 flex flex-col gap-2 px-4 select-none">
+                <div className="flex bg-gray-800 p-2 rounded justify-between cursor-pointer items-center" onClick={changeTheme}>
+                    <p>Theme</p>
+                    < MdOutlineWbSunny className="text-2xl" />
+                </div>
+                <Link href={"/"} className="flex bg-gray-800 p-2 rounded justify-between cursor-pointer hover:bg-gray-700">
+                    Back To Home
+
+                </Link>
             </div>
         </aside>
     );
@@ -102,38 +125,3 @@ export default function DashboardLayout({ children }) {
         </div>
     );
 }
-
-function LinkUiGenerator({ links }) {
-
-    let isArray = Array.isArray(links);
-    if (isArray) return links.map((linkObject, index) => {
-        if (linkObject?.children && linkObject.children.length > 0) return <LinkUiDropDown linkObject={linkObject}></LinkUiDropDown>;
-        return <LinkUiGenerator key={linkObject.label + index} links={linkObject} />
-    })
-    return <ActiveLink to={`${links.href}`}>{links.label}</ActiveLink>
-
-}
-function LinkUiDropDown({ linkObject }) {
-    const [open, setOpen] = useState(false);
-    return <div className={`w-full flex flex-col   ${open ? "" : "border-s-transparent"}`} >
-        <div className={`relative w-full ${open ? "bg-gray-700" : ""} mb-2`}>
-            <ActiveLink to={linkObject.href}>{linkObject.label}</ActiveLink>
-            <button className="px-1 font-bold absolute right-0 text-2xl cursor-pointer" onClick={() => setOpen(!open)}>{open ? "-" : "+"}</button>
-        </div>
-        <div className={`flex flex-col gap-1 border-s-2 ${open ? "block border-s-gray-600" : "hidden border-s-transparent"} ps-2`}>
-            {<LinkUiGenerator links={linkObject?.children} />}
-        </div>
-    </div >
-}
-/*
-1. takes in an argument which is an array of objects
-2. if array:
-   -> loop over array 
-      -> if object has children, render a button to toggle children visibility
-       ->  when button is clicked, toggle visibility of children links
-       ->  pass it to the LinkUiGenerator
-      
-     ->else Just call the LinkUiGenerator passing the object
-3. if not array: it will render a single link
-
-*/
